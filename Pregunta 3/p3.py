@@ -8,6 +8,7 @@ Materia: INF - 354
 
 # Importamos las librerias 
 import pandas as pd
+import numpy as np
 
 from sklearn import preprocessing
 # librerias para dividir los datos (dos opciones)
@@ -20,10 +21,32 @@ from sklearn.neural_network import MLPClassifier
 
 # Cargamos los datos en un dataframe
 datos =pd.read_csv('crx.csv')
+# Remplazamos con los datos faltantes con null de np 
+datos = datos.replace("?",np.NaN)
+# imputamos con la media
+datos = datos.fillna(datos.mean())
+
+for col in datos.columns:
+    #vemos si es de tipo object - nominal
+    if datos[col].dtypes == 'object':
+        # imputamos con la moda
+        datos[col] = datos[col].fillna(datos[col].value_counts().index[0])
+
+from sklearn.preprocessing import LabelEncoder
+
+le = LabelEncoder()
+# con todas las tablas cambiamos las valores no numericos a numericos en un rango 
+for col in datos.columns:
+    #vemos si es de tipo object - nominal
+    if datos[col].dtype=='object':
+    # tanfomramos los valores no numericos
+        datos[col]=le.fit_transform(datos[col])
+        
 
 # Definimos las entradas para la red neuronal
-X = datos[['A3','A8','A15']] # entradas
+X = datos[['A2','A3','A4','A5','A6','A7','A8','A9','A10','A11','A12','A14','A15']] # entradas
 y = datos['A1'] # salida
+
 
 
 # Dividimos los datos en entrenamiento y testeo donde 80% es entrenamiento y 20% test
@@ -76,4 +99,3 @@ print("\nArray de precision:\n%s"%(scores))
 cm1 = confusion_matrix(y_test1, pred1)
 print("\nMatriz de Confusion:\n%s"%(cm1)) 
 print("\nResultados de la Red Neuronal:\n%s"%(classification_report(y_test1,pred1)))
-
