@@ -11,6 +11,7 @@ import pandas as pd
 import numpy as np
 
 from sklearn import preprocessing
+from sklearn.preprocessing import LabelEncoder
 # librerias para dividir los datos (dos opciones)
 from sklearn.model_selection import train_test_split  
 from sklearn.model_selection import StratifiedShuffleSplit
@@ -31,8 +32,6 @@ for col in datos.columns:
     if datos[col].dtypes == 'object':
         # imputamos con la moda
         datos[col] = datos[col].fillna(datos[col].value_counts().index[0])
-
-from sklearn.preprocessing import LabelEncoder
 
 le = LabelEncoder()
 # con todas las tablas cambiamos las valores no numericos a numericos en un rango 
